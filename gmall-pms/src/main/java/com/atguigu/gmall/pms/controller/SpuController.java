@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.atguigu.gmall.pms.VO.SpuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 
 /**
  * spu信息
- *
+ *Request URL: http://api.gmall.com/pms/spu/category/0?t=1611061340518&pageNum=1&pageSize=10&key=
  * @author liugang
  * @email 1967974687@qq.com
  * @date 2021-01-18 19:57:37
@@ -33,6 +34,14 @@ public class SpuController {
 
     @Autowired
     private SpuService spuService;
+
+    @GetMapping("category/{categoryId}")
+    @ApiOperation("分页查询")
+    public ResponseVo<PageResultVo> querySquByCid(PageParamVo pageParamVo, @PathVariable("categoryId") Long cid) {
+        PageResultVo pageResultVo=this.spuService.querySquByCidAndPage(pageParamVo,cid);
+        return ResponseVo.ok(pageResultVo);
+    }
+
 
     /**
      * 列表
@@ -62,8 +71,8 @@ public class SpuController {
      */
     @PostMapping
     @ApiOperation("保存")
-    public ResponseVo<Object> save(@RequestBody SpuEntity spu){
-		spuService.save(spu);
+    public ResponseVo<Object> save(@RequestBody SpuVo spu){
+		this.spuService.bigSave(spu);
 
         return ResponseVo.ok();
     }

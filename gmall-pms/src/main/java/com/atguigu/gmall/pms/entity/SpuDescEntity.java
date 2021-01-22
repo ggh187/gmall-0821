@@ -1,11 +1,14 @@
 package com.atguigu.gmall.pms.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+
+import static com.baomidou.mybatisplus.annotation.IdType.INPUT;
 
 /**
  * spu信息介绍
@@ -22,7 +25,7 @@ public class SpuDescEntity implements Serializable {
 	/**
 	 * 商品id
 	 */
-	@TableId
+	@TableId(type = INPUT)
 	private Long spuId;
 	/**
 	 * 商品介绍

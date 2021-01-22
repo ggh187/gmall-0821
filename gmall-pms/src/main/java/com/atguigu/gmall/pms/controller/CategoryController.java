@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 
 /**
  * 商品三级分类
- *
+ *category是所有的商品的分类，几千个
  * @author liugang
  * @email 1967974687@qq.com
  * @date 2021-01-18 19:57:37
@@ -33,6 +34,21 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @GetMapping("parent/{parentId}")
+    public ResponseVo<List<CategoryEntity>> queryCategoryBypid(@PathVariable("parentId") Long pid) {
+        //这里parent传入的值是-1，但是数据表里没有-1类型，所以需要判断,dgyu等于-1，查询所有，不等于-1，根据条件查询
+        QueryWrapper<CategoryEntity> wrapper = new QueryWrapper<>();
+
+        if(pid!=-1){
+            wrapper.eq("parent_id", pid);
+        }
+
+        List<CategoryEntity> categoryEntities = this.categoryService.list(wrapper);
+
+        return ResponseVo.ok(categoryEntities);
+    }
+
 
     /**
      * 列表
