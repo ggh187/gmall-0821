@@ -10,6 +10,7 @@ import com.atguigu.gmall.pms.mapper.SpuDescMapper;
 
 import com.atguigu.gmall.pms.service.*;
 import com.atguigu.gmall.sms.api.vo.SkuSaleVo;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -88,7 +90,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         return new PageResultVo(page);
     }
 
-    @Transactional(propagation = REQUIRED)
+    @GlobalTransactional
     @Override
     public void bigSave(SpuVo spuVo) {
         //拿到前端传过来的数据这时候需要考虑把里面的数据保存到那几张表里面。
@@ -101,8 +103,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         //sms_sku_bounds    积分表
         //sms_sku_full_reduction  满减表
         //sms_sku_ladder  满几件打几折
-
         //先保存spu的相关信息  pms_spu    pu_attr_value   spu_desc
+
         //1.1 保存pms_spu
         Long id = saveSpu(spuVo);
 
@@ -115,6 +117,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         //再保存sku息
         //2.1  sku
         savezSkuInfo(spuVo, id);
+        //int i=1/0;
 
 
         //3.1 sms_sku_bounds    积分表
@@ -126,7 +129,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
 
     }
 
-    @Transactional(propagation = REQUIRED)
+    @Transactional
     public  void savezSkuInfo(SpuVo spuVo, Long id) {
         List<SkuVo> skuVos = spuVo.getSkus();
         if (CollectionUtils.isEmpty(skuVos)){
